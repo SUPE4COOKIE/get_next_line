@@ -6,15 +6,16 @@
 /*   By: mwojtasi <mwojtasi@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/10 08:19:44 by mwojtasi          #+#    #+#             */
-/*   Updated: 2023/12/12 04:17:11 by mwojtasi         ###   ########.fr       */
+/*   Updated: 2023/12/14 04:52:39 by mwojtasi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <fcntl.h>
 #include <stdio.h>
+#include <string.h>
 
-t_list *get_next_line(int fd)
+char *get_next_line(int fd)
 {
 	static t_list *stash = NULL;
 	size_t i;
@@ -30,7 +31,7 @@ t_list *get_next_line(int fd)
 		buffer = read_buffer(fd);
 	}
 	append_buffer(&stash, buffer);
-	return (stash);
+	return (strcat_list(&stash, buffer));
 }
 
 char	*read_buffer(int fd)
@@ -44,14 +45,13 @@ char	*read_buffer(int fd)
 	buffer[BUFFER_SIZE] = '\0';
 	read_bytes = read(fd, buffer, BUFFER_SIZE);
 	if (read_bytes == 0)
-		return (free(buffer), printf("eof") ,NULL);
+		return (free(buffer), NULL);
 	return (buffer);
 }
 
 int is_line(char *buffer)
 {
     size_t i = 0;
-
     while (i < BUFFER_SIZE && buffer[i])
     {
         if (buffer[i] == '\n')
@@ -81,7 +81,7 @@ t_list *append_buffer(t_list **stash, char *buffer)
 		current->next = new;
 	}
 	return (new);
-} //move to utils
+}
 
 size_t str_list_len(t_list *list)
 {
@@ -108,20 +108,90 @@ size_t str_list_len(t_list *list)
 	return (count);
 }
 
-//char *strcat_list(t_list *res)
-//{
-//	char 
-//}
+
+void	*ft_memmove(void *dest, const void *src, size_t n)
+{
+	size_t	i;
+
+	if (!dest && !src)
+		return (NULL);
+	if (dest < src)
+	{
+		i = 0;
+		while (n--)
+		{
+			((unsigned char *)dest)[i] = ((unsigned char *)src)[i];
+			i++;
+		}
+	}
+	else
+	{
+		while (n > 0)
+		{
+			n--;
+			((unsigned char *)dest)[n] = ((unsigned char *)src)[n];
+		}
+	}
+	return (dest);
+}
+
+int strcat_untiln(char *dest, char **src)
+{
+	size_t i;
+	size_t j;
+
+	if (!dest || !src || !*src)
+        return (1);
+	i = 0;
+	j = 0;
+	while (dest[i])
+		i++;
+	while ((*src)[j] && (*src)[j] != '\n')
+		dest[i++] = (*src)[j++];
+	if ((*src)[j] == '\n')
+	{
+		dest[i++] = (*src)[j++];
+		ft_memmove(*src, *src + j, strlen(*src + j) + 1);
+		dest[i] = '\0';
+		return (1);
+	}
+	dest[i] = '\0';
+	return (0);
+}
+
+char *strcat_list(t_list **res, char *buffer)
+{
+    char *str;
+    t_list *tmp_list;
+    size_t len;
+
+    len = str_list_len(*res);
+    str = malloc(len + 1);
+    if (str == NULL)
+        return (NULL);
+    str[0] = '\0';
+    while (strcat_untiln(str, &((*res)->str)) == 0)
+    {
+        tmp_list = (*res)->next;
+        free((*res)->str);
+        free(*res);
+        *res = tmp_list;
+    }
+    return (str);
+}
+
 
 int main(int argc, char **argv)
 {
     int fd;
-	t_list *res;
+	char *line;	
 	
     fd = open(argv[1], O_RDONLY);
-    res = get_next_line(fd);
-	printf("%zu", str_list_len(res));
-	//get_next_line(fd);
+	line = get_next_line(fd);
+    printf("%s", line);
+	line = get_next_line(fd);
+    printf("%s", line);
+    free(line);
     close(fd);
     return (0);
 }
