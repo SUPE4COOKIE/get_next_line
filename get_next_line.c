@@ -6,7 +6,7 @@
 /*   By: mwojtasi <mwojtasi@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/10 08:19:44 by mwojtasi          #+#    #+#             */
-/*   Updated: 2023/12/14 04:52:39 by mwojtasi         ###   ########.fr       */
+/*   Updated: 2023/12/15 03:07:29 by mwojtasi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,31 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
+
+void	ft_bzero(void *s, size_t n)
+{
+	size_t			i;
+	unsigned char	*ptr;
+
+	i = 0;
+	ptr = (unsigned char *)s;
+	while (i < n)
+	{
+		ptr[i] = '\0';
+		i++;
+	}
+}
+
+void free_stash(t_list **stash) {
+	t_list *tmp;
+
+	while (*stash) {
+		tmp = (*stash)->next;
+		free((*stash)->str);
+		free(*stash);
+		*stash = tmp;
+	}
+}
 
 char *get_next_line(int fd)
 {
@@ -25,13 +50,16 @@ char *get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	buffer = read_buffer(fd);
-	while (!is_line(buffer))
+	while (buffer && !is_line(buffer))
 	{
 		append_buffer(&stash, buffer);
+		free(buffer);
 		buffer = read_buffer(fd);
 	}
-	append_buffer(&stash, buffer);
-	return (strcat_list(&stash, buffer));
+	if (buffer)
+		append_buffer(&stash, buffer);
+	free(buffer);
+	return (strcat_list(&stash));
 }
 
 char	*read_buffer(int fd)
@@ -42,9 +70,9 @@ char	*read_buffer(int fd)
 	buffer = malloc(BUFFER_SIZE + 1);
 	if (buffer == NULL)
 		return (NULL);
-	buffer[BUFFER_SIZE] = '\0';
+	ft_bzero(buffer, BUFFER_SIZE + 1);
 	read_bytes = read(fd, buffer, BUFFER_SIZE);
-	if (read_bytes == 0)
+	if (read_bytes <= 0)
 		return (free(buffer), NULL);
 	return (buffer);
 }
@@ -69,7 +97,7 @@ t_list *append_buffer(t_list **stash, char *buffer)
 	new = malloc(sizeof(t_list));
 	if (new == NULL)
 		return (NULL);
-	new->str = buffer;
+	new->str = strdup(buffer);
 	new->next = NULL;
 	if (*stash == NULL)
 		*stash = new;
@@ -80,6 +108,7 @@ t_list *append_buffer(t_list **stash, char *buffer)
 			current = current->next;
 		current->next = new;
 	}
+	
 	return (new);
 }
 
@@ -90,19 +119,14 @@ size_t str_list_len(t_list *list)
 	t_list	*current;
 
 	count = 0;
-	i = 0;
 	current = list;
 	while (current != NULL)
 	{
-		if (current->next != NULL)
-			count += BUFFER_SIZE;
-		else
-		{
-			while (current->str[i])
-				if (current->str[i++] == '\n')
-					return (count + i);
-			count += i;
-		}
+		i = 0;
+		while (current->str[i])
+			if (current->str[i++] == '\n')
+				return (count + i);
+		count += i;
 		current = current->next;
 	}
 	return (count);
@@ -159,7 +183,7 @@ int strcat_untiln(char *dest, char **src)
 	return (0);
 }
 
-char *strcat_list(t_list **res, char *buffer)
+char *strcat_list(t_list **res)
 {
     char *str;
     t_list *tmp_list;
@@ -189,9 +213,16 @@ int main(int argc, char **argv)
     fd = open(argv[1], O_RDONLY);
 	line = get_next_line(fd);
     printf("%s", line);
+	free(line);
 	line = get_next_line(fd);
     printf("%s", line);
     free(line);
+	line = get_next_line(fd);
+    printf("%s", line);
+    free(line);
+	line = get_next_line(fd);
+	printf("%s", line);
+	free(line);
     close(fd);
     return (0);
 }
