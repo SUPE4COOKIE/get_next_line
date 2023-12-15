@@ -6,7 +6,7 @@
 /*   By: mwojtasi <mwojtasi@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/10 08:19:44 by mwojtasi          #+#    #+#             */
-/*   Updated: 2023/12/15 03:07:29 by mwojtasi         ###   ########.fr       */
+/*   Updated: 2023/12/15 03:19:42 by mwojtasi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,6 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
-
-void	ft_bzero(void *s, size_t n)
-{
-	size_t			i;
-	unsigned char	*ptr;
-
-	i = 0;
-	ptr = (unsigned char *)s;
-	while (i < n)
-	{
-		ptr[i] = '\0';
-		i++;
-	}
-}
 
 void free_stash(t_list **stash) {
 	t_list *tmp;
@@ -70,10 +56,10 @@ char	*read_buffer(int fd)
 	buffer = malloc(BUFFER_SIZE + 1);
 	if (buffer == NULL)
 		return (NULL);
-	ft_bzero(buffer, BUFFER_SIZE + 1);
 	read_bytes = read(fd, buffer, BUFFER_SIZE);
 	if (read_bytes <= 0)
 		return (free(buffer), NULL);
+	buffer[read_bytes] = '\0';
 	return (buffer);
 }
 
