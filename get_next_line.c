@@ -6,7 +6,7 @@
 /*   By: mwojtasi <mwojtasi@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/10 08:19:44 by mwojtasi          #+#    #+#             */
-/*   Updated: 2023/12/16 04:42:20 by mwojtasi         ###   ########.fr       */
+/*   Updated: 2023/12/16 14:28:38 by mwojtasi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,20 +33,22 @@ char *get_next_line(int fd)
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	buffer = read_buffer(fd);
+	buffer = read_buffer(fd, &stash);
 	while (buffer && !is_line(buffer))
 	{
 		append_buffer(&stash, buffer);
 		free(buffer);
-		buffer = read_buffer(fd);
+		buffer = read_buffer(fd, &stash);
 	}
 	if (buffer)
+	{
 		append_buffer(&stash, buffer);
-	free(buffer);
+		free(buffer);
+	}
 	return (strcat_list(&stash));
 }
 
-char	*read_buffer(int fd)
+char	*read_buffer(int fd, t_list **stash)
 {
 	char	*buffer;
 	int		read_bytes;
@@ -55,8 +57,10 @@ char	*read_buffer(int fd)
 	if (buffer == NULL)
 		return (NULL);
 	read_bytes = read(fd, buffer, BUFFER_SIZE);
-	if (read_bytes <= 0)
+	if (read_bytes == 0)
 		return (free(buffer), NULL);
+	if (read_bytes < 0)
+		return (free(buffer), free_stash(stash), NULL);
 	buffer[read_bytes] = '\0';
 	return (buffer);
 }
@@ -203,12 +207,6 @@ char *strcat_list(t_list **res)
 //	line = get_next_line(fd);
 //    printf("%s", line);
 //    free(line);
-//	line = get_next_line(fd);
-//    printf("%s", line);
-//    free(line);
-//	line = get_next_line(fd);
-//	printf("%s", line);
-//	free(line);
 //    close(fd);
 //    return (0);
 //}
