@@ -6,7 +6,7 @@
 /*   By: mwojtasi <mwojtasi@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/10 08:19:44 by mwojtasi          #+#    #+#             */
-/*   Updated: 2023/12/15 03:19:42 by mwojtasi         ###   ########.fr       */
+/*   Updated: 2023/12/16 04:42:20 by mwojtasi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,8 @@ void free_stash(t_list **stash) {
 char *get_next_line(int fd)
 {
 	static t_list *stash = NULL;
-	size_t i;
 	char *buffer;
 
-	i = 0;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	buffer = read_buffer(fd);
@@ -51,7 +49,7 @@ char *get_next_line(int fd)
 char	*read_buffer(int fd)
 {
 	char	*buffer;
-	size_t	read_bytes;
+	int		read_bytes;
 	
 	buffer = malloc(BUFFER_SIZE + 1);
 	if (buffer == NULL)
@@ -187,29 +185,31 @@ char *strcat_list(t_list **res)
         free(*res);
         *res = tmp_list;
     }
+	if (str[0] == '\0')
+		return (free(str), NULL);
     return (str);
 }
 
 
-int main(int argc, char **argv)
-{
-    int fd;
-	char *line;	
-	
-    fd = open(argv[1], O_RDONLY);
-	line = get_next_line(fd);
-    printf("%s", line);
-	free(line);
-	line = get_next_line(fd);
-    printf("%s", line);
-    free(line);
-	line = get_next_line(fd);
-    printf("%s", line);
-    free(line);
-	line = get_next_line(fd);
-	printf("%s", line);
-	free(line);
-    close(fd);
-    return (0);
-}
+//int main(int argc, char **argv)
+//{
+//    int fd;
+//	char *line;	
+//	
+//    fd = open(argv[1], O_RDONLY);
+//	line = get_next_line(fd);
+//    printf("%s", line);
+//	free(line);
+//	line = get_next_line(fd);
+//    printf("%s", line);
+//    free(line);
+//	line = get_next_line(fd);
+//    printf("%s", line);
+//    free(line);
+//	line = get_next_line(fd);
+//	printf("%s", line);
+//	free(line);
+//    close(fd);
+//    return (0);
+//}
 
