@@ -6,7 +6,7 @@
 /*   By: mwojtasi <mwojtasi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/10 08:19:47 by mwojtasi          #+#    #+#             */
-/*   Updated: 2023/12/18 17:17:51 by mwojtasi         ###   ########.fr       */
+/*   Updated: 2023/12/19 15:42:11 by mwojtasi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,14 +51,26 @@ void	*ft_memmove(void *dest, const void *src, size_t n)
 	return (dest);
 }
 
-size_t	ft_strlen(const char *s)
+char	*ft_strdup(char *src)
 {
+	char	*new;
+	size_t	i;
 	size_t	count;
 
 	count = 0;
-	while (s[count])
+	while (src[count])
 		count++;
-	return (count);
+	new = malloc(count + 1);
+	i = 0;
+	if (new == NULL)
+		return (NULL);
+	while (src[i])
+	{
+		new[i] = src[i];
+		i++;
+	}
+	new[i] = 0;
+	return (new);
 }
 
 int	is_line(char *buffer)

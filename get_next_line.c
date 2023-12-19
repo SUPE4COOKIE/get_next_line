@@ -6,7 +6,7 @@
 /*   By: mwojtasi <mwojtasi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/10 08:19:44 by mwojtasi          #+#    #+#             */
-/*   Updated: 2023/12/18 17:22:24 by mwojtasi         ###   ########.fr       */
+/*   Updated: 2023/12/19 15:43:11 by mwojtasi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ t_list	*append_buffer(t_list **stash, char *buffer)
 	new = malloc(sizeof(t_list));
 	if (new == NULL)
 		return (NULL);
-	new->str = strdup(buffer);
+	new->str = ft_strdup(buffer);
 	new->next = NULL;
 	if (*stash == NULL)
 		*stash = new;
@@ -77,11 +77,13 @@ int	strcat_untiln(char *dest, char **src)
 {
 	size_t	i;
 	size_t	j;
+	size_t	count;
 
 	if (!dest || !src || !*src)
 		return (1);
 	i = 0;
 	j = 0;
+	count = 0;
 	while (dest[i])
 		i++;
 	while ((*src)[j] && (*src)[j] != '\n')
@@ -89,7 +91,9 @@ int	strcat_untiln(char *dest, char **src)
 	if ((*src)[j] == '\n')
 	{
 		dest[i++] = (*src)[j++];
-		ft_memmove(*src, *src + j, ft_strlen(*src + j) + 1);
+		while ((*src + j)[count])
+			count++;
+		ft_memmove(*src, *src + j, count + 1);
 		dest[i] = '\0';
 		return (1);
 	}

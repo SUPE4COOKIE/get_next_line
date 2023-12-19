@@ -6,7 +6,7 @@
 /*   By: mwojtasi <mwojtasi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/10 08:19:50 by mwojtasi          #+#    #+#             */
-/*   Updated: 2023/12/18 17:24:43 by mwojtasi         ###   ########.fr       */
+/*   Updated: 2023/12/19 15:43:38 by mwojtasi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ typedef struct s_list
 }					t_list;
 void				free_stash(t_list **stash);
 void				*ft_memmove(void *dest, const void *src, size_t n);
-size_t				ft_strlen(const char *s);
+char				*ft_strdup(char *src);
 char				*get_next_line(int fd);
 t_list				*append_buffer(t_list **stash, char *buffer);
 char				*read_buffer(int fd, t_list **stash);
