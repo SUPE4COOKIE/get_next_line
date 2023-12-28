@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mwojtasi <mwojtasi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mwojtasi <mwojtasi@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/10 08:19:44 by mwojtasi          #+#    #+#             */
-/*   Updated: 2023/12/19 20:58:26 by mwojtasi         ###   ########.fr       */
+/*   Updated: 2023/12/28 20:03:58 by mwojtasi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ t_list	*append_buffer(t_list **stash, char *buffer)
 		return (free(buffer), free_stash(stash), NULL);
 	new->str = ft_strdup(buffer);
 	if (new->str == NULL)
-		return (NULL);
+		return (free(new), NULL);
 	new->next = NULL;
 	if (*stash == NULL)
 		*stash = new;
@@ -133,37 +133,8 @@ char	*strcat_list(t_list **res)
 		test = strcat_untiln(str, &((*res)->str));
 	}
 	if (test == 2)
-		return (NULL);
+		return (free(str),NULL);
 	if (str[0] == '\0')
 		return (free(str), free_stash(res), NULL);
 	return (str);
-}
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-
-int main(int argc, char **argv)
-{
-   int fd;
-
-   fd = open(argv[1], O_RDONLY);
-   while (42)
-   {
-		char *line = get_next_line(fd);
-		printf("%s", line);
-		if (line == NULL)
-		{
-			free(line);
-			return (0);
-		}
-		free(line);
-   }
-// 	line = get_next_line(fd);
-//    printf("%s", line);
-// 	free(line);
-// 	line = get_next_line(fd);
-//    printf("%s", line);
-//    free(line);
-   close(fd);
-   return (0);
 }

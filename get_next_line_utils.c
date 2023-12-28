@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mwojtasi <mwojtasi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mwojtasi <mwojtasi@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/10 08:19:47 by mwojtasi          #+#    #+#             */
-/*   Updated: 2023/12/19 20:44:05 by mwojtasi         ###   ########.fr       */
+/*   Updated: 2023/12/28 20:22:42 by mwojtasi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	free_stash(t_list **stash)
 		free(*stash);
 		*stash = tmp;
 	}
+	stash = NULL;
 }
 
 void	*ft_memmove(void *dest, const void *src, size_t n)
