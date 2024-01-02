@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mwojtasi <mwojtasi@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mwojtasi <mwojtasi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/10 08:19:44 by mwojtasi          #+#    #+#             */
-/*   Updated: 2023/12/28 20:03:58 by mwojtasi         ###   ########.fr       */
+/*   Updated: 2024/01/02 17:56:19 by mwojtasi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ t_list	*append_buffer(t_list **stash, char *buffer)
 		return (free(buffer), free_stash(stash), NULL);
 	new->str = ft_strdup(buffer);
 	if (new->str == NULL)
-		return (free(new), NULL);
+		return (free(new), free_stash(stash), NULL);
 	new->next = NULL;
 	if (*stash == NULL)
 		*stash = new;
@@ -133,7 +133,7 @@ char	*strcat_list(t_list **res)
 		test = strcat_untiln(str, &((*res)->str));
 	}
 	if (test == 2)
-		return (free(str),NULL);
+		return (free(str), NULL);
 	if (str[0] == '\0')
 		return (free(str), free_stash(res), NULL);
 	return (str);
