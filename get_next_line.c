@@ -6,7 +6,7 @@
 /*   By: mwojtasi <mwojtasi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/10 08:19:44 by mwojtasi          #+#    #+#             */
-/*   Updated: 2024/01/02 17:56:19 by mwojtasi         ###   ########.fr       */
+/*   Updated: 2024/01/02 18:05:05 by mwojtasi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,23 +116,23 @@ char	*strcat_list(t_list **res)
 	char	*str;
 	t_list	*tmp_list;
 	size_t	len;
-	int		test;
+	int		caterr;
 
 	len = str_list_len(*res);
 	str = malloc(len + 1);
 	if (str == NULL)
 		return (free_stash(res), NULL);
 	str[0] = '\0';
-	test = strcat_untiln(str, &((*res)->str));
-	while (test == 0)
+	caterr = strcat_untiln(str, &((*res)->str));
+	while (caterr == 0)
 	{
 		tmp_list = (*res)->next;
 		free((*res)->str);
 		free(*res);
 		*res = tmp_list;
-		test = strcat_untiln(str, &((*res)->str));
+		caterr = strcat_untiln(str, &((*res)->str));
 	}
-	if (test == 2)
+	if (caterr == 2)
 		return (free(str), NULL);
 	if (str[0] == '\0')
 		return (free(str), free_stash(res), NULL);
